@@ -7,4 +7,13 @@ import com.bjpowernode.crm.workbench.service.ActivityService;
 
 public class ActivityServiceImpl implements ActivityService {
     private ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+
+    public Boolean save(Activity a) {
+        boolean flag = true;
+        int count = activityDao.save(a);
+        if (count!=1){
+            flag = false;
+        }
+        return flag;
+    }
 }
