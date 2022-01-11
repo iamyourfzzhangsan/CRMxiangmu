@@ -9,6 +9,7 @@ import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +84,38 @@ public class ActivityServiceImpl implements ActivityService {
         int count = activityDao.update(a);
         if (count!=1){
             flag = false;
+        }
+        return flag;
+    }
+
+    public Activity detail(String id) {
+        Activity a =activityDao.detail(id);
+             return a;
+    }
+
+    public List<ActivityRemark> getRemarkListById(String activityId) {
+        List<ActivityRemark> arList = activityRemarkDao.getRemarkListById(activityId);
+        return arList;
+    }
+
+    public boolean deleteRemark(String id) {
+        boolean flag = true;
+        System.out.println("-----------------"+id);
+        int count = activityRemarkDao.deleteById(id);
+
+        if(count!=1){
+
+            flag = false;
+
+        }
+        return flag;
+    }
+
+    public boolean saveRemark(ActivityRemark ar) {
+        boolean flag = true;
+        int count = activityRemarkDao.saveRemark(ar);
+        if (count!= 1){
+            flag= false;
         }
         return flag;
     }

@@ -196,6 +196,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						//	所有得值填写好之后，打开修改操作的模态窗口
 						$("#editActivityModal").modal("show");
 
+
 					}
 				})
 			}
@@ -267,7 +268,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				$.each(data.dataList,function (i,n) {
 				html+='<tr class="active">';
 				html+='<td><input type="checkbox" name="xz" value="'+n.id+'"/></td>';
-				html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
+				html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+n.id+'\';">'+n.name+'</a></td>';
 				html+='<td>'+n.owner+'</td>';
 				html+='<td>'+n.startDate+'</td>';
 				html+='<td>'+n.endDate+'</td>';
@@ -404,11 +405,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control time" id="edit-startDate " readonly>
+								<input type="text" class="form-control time" id="edit-startDate" readonly>
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control time" id="edit-endDate " readonly >
+								<input type="text" class="form-control time" id="edit-endDate" readonly>
 							</div>
 						</div>
 						
