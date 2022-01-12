@@ -96,7 +96,36 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				}
 			})
 		})
+		//未更新按钮绑定事件
+		$("#updateRemarkBtn").click(function () {
+			var id = $("#remarkId").val();
+			$.ajax({
+				url:"workbench/activity/updateRemark.do",
+				data:{
+					"id":id,
+					"noteContent":$.trim($("#noteContent").val())
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if (data.success){
+						//	修改备注成功
+						//	更新DIV中相应的信息，需要更新的内容有noteCONTENT,EDITTIME,EDITBY
+						$("#e"+id).html(data.ar.noteContent);
+						$("#s"+id).html(data.ar.editTime+"由"+data.ar.editBy);
+						$("#editRemarkModal").modal("hide");
+					} else {
+						alert("备注修改失败");
+					}
+
+				}
+			})
+		})
+
+
 	});
+
+
 	function showRemarkList() {
         $.ajax({
             url:"workbench/activity/getRemarkListByAid.do",
@@ -112,10 +141,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                html += '<div id="'+n.id+'" class="remarkDiv" style="height: 60px;">';
                html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
                html += '<div style="position: relative; top: -40px; left: 40px;" >';
-               html += '<h5>'+n.noteContent+'</h5>';
+               html += '<h5 id="e'+n.id+'">'+n.noteContent+'</h5>';
                html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${a.name}</b> <small style="color: gray;"> '+(n.editFlag==0?n.createTime:n.editTime)+'由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
                html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
-               html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
+               html += '<a class="myHref" href="javascript:void(0);"  onclick="editRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
                html += '&nbsp;&nbsp;&nbsp;&nbsp;';
                html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
                html += '</div>';
@@ -128,6 +157,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             }
         })
     }
+
     function deleteRemark(id) {
 		// alert(id);
 		$.ajax({
@@ -149,6 +179,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			}
 		})
+	}
+
+	function editRemark(id) {
+		//将模态窗口中，隐藏域中的ID进行赋值
+		$("#remarkId").val(id);
+		//找到指定的存放备注信息的H5标签
+		var noteContent = $("#e"+id).html();
+		//将H5中展现出来的信息，赋予到修改操作模态窗口的文本域中
+		$("#noteContent").val(noteContent);
+		$("#editRemarkModal").modal("show");
+
 	}
 	
 </script>
