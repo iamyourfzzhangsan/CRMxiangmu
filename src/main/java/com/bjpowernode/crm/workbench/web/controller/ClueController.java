@@ -42,7 +42,36 @@ public class ClueController extends HttpServlet {
             unbund(request,response);
         }else if ("/workbench/clue/getActivityListByNameAndNotByClueId.do".equals(path)){
             getActivityListByNameAndNotByClueId(request,response);
+        }else if ("/workbench/clue/bund.do".equals(path)){
+            bund(request,response);
+        }else if ("/workbench/clue/getActivityListByName.do".equals(path)){
+            getActivityListByName(request,response);
+        }else if ("/workbench/clue/convert.do".equals(path)){
+            convert(request,response);
         }
+    }
+
+    private void convert(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行线索转换的操作");
+        String clueId = request.getParameter("clueId");
+    }
+
+    private void getActivityListByName(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("查询市场活动列表（根据每次模糊查");
+        String aname=request.getParameter("aname");
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<Activity> aList = as.getActivityListByName(aname);
+        PrintJson.printJsonObj(response,aList);
+    }
+
+    private void bund(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行关联市场活动的操作");
+        String cid = request.getParameter("cid");
+        String aids[] =request.getParameterValues("aid");
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = cs.bund(cid,aids);
+        PrintJson.printJsonFlag(response,flag);
+
     }
 
     private void getActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
