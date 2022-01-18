@@ -228,6 +228,7 @@ public class ClueServiceImpl implements ClueService {
 
         }
 
+
         //(8)删除线索备注
         for(ClueRemark clueRemark : clueRemarkList){
 
