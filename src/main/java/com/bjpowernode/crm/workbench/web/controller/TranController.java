@@ -10,6 +10,7 @@ import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
 import com.bjpowernode.crm.workbench.domain.Tran;
+import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
@@ -19,6 +20,7 @@ import com.bjpowernode.crm.workbench.service.impl.ClueServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +42,51 @@ public class TranController extends HttpServlet {
             getCustomerName(request, response);
         }else if ("/workbench/transaction/save.do".equals(path)) {
             save(request, response);
+        }else if ("/workbench/transaction/detail.do".equals(path)) {
+            detail(request, response);
+        }else if ("/workbench/transaction/getHistoryListByTranId.do".equals(path)) {
+            getHistoryListByTranId(request, response);
+        }else if ("/workbench/transaction/changeStage.do".equals(path)) {
+            changeStage(request, response);
         }
+    }
+
+    private void changeStage(HttpServletRequest request, HttpServletResponse response) {
+    }
+
+    private void getHistoryListByTranId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("根据交易Id取得相应的历史列表");
+
+        String tranId = request.getParameter("tranId");
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        List<TranHistory> thList =ts.getHistoryListByTranId(tranId);
+        Map<String,String> pMap = (Map<String, String>) this.getServletContext().getAttribute("pMap");
+
+
+//        将交易历史列表遍历
+        for (TranHistory th:thList){
+            String stage = th.getStage();
+             String possibility = pMap.get(stage);
+             th.setPossibility(possibility);
+        }
+        PrintJson.printJsonObj(response,thList);
+
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("跳转到详细信息页");
+        String id = request.getParameter("id");
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran t = ts.detail(id);
+//        处理可能性
+        String stage = t.getStage();
+        Map<String,String> pMap = (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        String possibility =pMap.get(stage);
+
+        t.setPossibility(possibility);
+        request.setAttribute("t",t);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request,response);
+
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
